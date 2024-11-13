@@ -20,7 +20,7 @@ jobs:
       workflow-dispatch-event-id: ${{ inputs.workflow-dispatch-event-id }}
       environment: ${{ inputs.environment }}
   build:
-    runs-on: windows-latest
+    runs-on: k8s-self-hosted #windows-latest
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
