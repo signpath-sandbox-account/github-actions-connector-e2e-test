@@ -1,4 +1,4 @@
 github-policies:
   runners:
-    runner_groups:
+    allowed_groups:
       - 'NO SUCH GROUP'
