@@ -1,0 +1,4 @@
+github-policies:
+  runners:
+    runner_groups:
+      - 'NO SUCH GROUP'

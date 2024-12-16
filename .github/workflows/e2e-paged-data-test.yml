@@ -279,4 +279,3 @@ jobs:
             signing-policy-slug: e2e-test-sp
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
-            github-extended-verification-token: '${{ secrets.EXTENDED_VERIFICATION_TOKEN }}'
