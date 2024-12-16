@@ -45,7 +45,6 @@ jobs:
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
             wait-for-completion: true
             output-artifact-directory: signed-artifact
-            github-extended-verification-token: '${{ secrets.EXTENDED_VERIFICATION_TOKEN }}'
             parameters: |
               param1: ${{ toJSON('value1') }}
               param2: "value2"
