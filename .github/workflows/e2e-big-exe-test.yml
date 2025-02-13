@@ -21,7 +21,8 @@ jobs:
       workflow-dispatch-event-id: ${{ inputs.workflow-dispatch-event-id }}
       environment: ${{ inputs.environment }}
   build:
-    runs-on: windows-latest
+    #runs-on: windows-latest
+    runs-on: e2e-tests-runner
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
