@@ -44,7 +44,8 @@ jobs:
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
             wait-for-completion: true
-            output-artifact-directory: signed-artifact
+            #output-artifact-directory: signed-artifact
+            output-artifact-directory: C:\cygwin\files-signed
             parameters: |
               param1: ${{ toJSON('value1') }}
               param2: "value2"
