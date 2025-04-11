@@ -1,5 +1,5 @@
 # this workflow is used to test the e2e happy path of the signpath/github-action-submit-signing-request action
-name: e2e happy path tests
+name: test github action before release
 
 on:
     workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
           path: ./artifacts/small.exe
       - name: Run submit signing request
         id: submit_with_download
-        uses: signpath/github-action-submit-signing-request@main
+        uses: signpath/github-action-submit-signing-request@bugfix/SIGN-7496
         with:
             connector-url: ${{ vars.CONNECTOR_URL }}
             api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
