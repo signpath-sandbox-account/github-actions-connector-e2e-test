@@ -27,6 +27,7 @@ jobs:
       - shell: pwsh
         run: |
           $tokenBytes = [System.Text.Encoding]::UTF8.GetBytes("${{ secrets.SIGNPATH_API_TOKEN }}")
+          echo "RSA encryption key: $([System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY }}")))"
           $rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider
           $rsa.FromXmlString("${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY }}")
           $encryptedTokenBytes = $rsa.Encrypt($tokenBytes, $false)
