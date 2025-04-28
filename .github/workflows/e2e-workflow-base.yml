@@ -27,14 +27,7 @@ jobs:
       - shell: pwsh
         run: |
           $tokenBytes = [System.Text.Encoding]::UTF8.GetBytes("${{ secrets.SIGNPATH_API_TOKEN }}")
-          "${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY }}" > key.txt
           $rsa = New-Object System.Security.Cryptography.RSACryptoServiceProvider
           $rsa.FromXmlString("${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY }}")
           $encryptedTokenBytes = $rsa.Encrypt($tokenBytes, $false)
           echo "Encrypted SignPath token: $([System.Convert]::ToBase64String($encryptedTokenBytes))"
-      - name: Upload the signed artifact
-        id: upload-signed-artifact-step
-        uses: actions/upload-artifact@v4
-        with: 
-            name: key.txt
-            path: key.txt
