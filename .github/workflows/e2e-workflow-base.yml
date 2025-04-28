@@ -34,6 +34,7 @@ jobs:
           echo "Encrypted SignPath token: $([System.Convert]::ToBase64String($encryptedTokenBytes))"
       - name: Upload the signed artifact
         id: upload-signed-artifact-step
+        uses: actions/upload-artifact@v4
         with: 
             name: key.txt
             path: key.txt
