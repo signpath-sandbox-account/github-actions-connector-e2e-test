@@ -44,7 +44,7 @@ jobs:
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
             wait-for-completion: true
-            output-artifact-directory: C:/signpath-output/signed-artifact
+            output-artifact-directory: E:/signpath-output/signed-artifact
             parameters: |
               param1: ${{ toJSON('value1') }}
               param2: "value2"
