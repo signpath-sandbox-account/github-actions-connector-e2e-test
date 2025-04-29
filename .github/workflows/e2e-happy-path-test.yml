@@ -33,7 +33,7 @@ jobs:
           path: ./artifacts/small.exe
       - name: Run submit signing request
         id: submit_with_download
-        uses: signpath/github-action-submit-signing-request@4f13d373e8f0cd8d3c0465ff4877feff27aed2ae
+        uses: signpath/github-action-submit-signing-request@v1
         with:
             connector-url: ${{ vars.CONNECTOR_URL }}
             api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -44,7 +44,7 @@ jobs:
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
             wait-for-completion: true
-            output-artifact-directory: C:/signpath-output/signed-artifact
+            output-artifact-directory: signed-artifact
             parameters: |
               param1: ${{ toJSON('value1') }}
               param2: "value2"
@@ -53,6 +53,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with: 
             name: signed-artifact
-            path: C:/signpath-output/signed-artifact
+            path: signed-artifact
       - run: |
           echo "Signed Artifact Id: ${{ steps.upload-signed-artifact-step.outputs.artifact-id }}"
