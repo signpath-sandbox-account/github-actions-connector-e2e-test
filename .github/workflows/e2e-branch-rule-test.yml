@@ -14,9 +14,9 @@ on:
           required: true
           type: string
         comment:
-            required: false
-            type: string
-            default: '<no comment>'
+          required: false
+          type: string
+          default: '<no comment>'
 jobs:
   call-base-workflows:
     uses: ./.github/workflows/e2e-workflow-base.yml
