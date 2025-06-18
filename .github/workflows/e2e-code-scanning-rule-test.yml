@@ -15,9 +15,9 @@ on:
           type: string
           default: e2e-test-sp-code-scanning
         comment:
-            required: false
-            type: string
-            default: '<no comment>'
+          required: false
+          type: string
+          default: '<no comment>'
 jobs:
   call-base-workflows:
     uses: ./.github/workflows/e2e-workflow-base.yml

@@ -14,12 +14,12 @@ on:
         required: true
         type: string
       environment:
-          required: true
-          type: string
+        required: true
+        type: string
       comment:
-          required: false
-          type: string
-          default: '<no comment>'
+        required: false
+        type: string
+        default: '<no comment>'
 jobs:
   log-event-id:
     runs-on: ubuntu-latest
