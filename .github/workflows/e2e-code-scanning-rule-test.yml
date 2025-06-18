@@ -14,6 +14,10 @@ on:
           required: true
           type: string
           default: e2e-test-sp-code-scanning
+        comment:
+            required: false
+            type: string
+            default: '<no comment>'
 jobs:
   call-base-workflows:
     uses: ./.github/workflows/e2e-workflow-base.yml
@@ -23,6 +27,7 @@ jobs:
     with:
       workflow-dispatch-event-id: ${{ inputs.workflow-dispatch-event-id }}
       environment: ${{ inputs.environment }}
+      comment: ${{ inputs.comment }}
   build:
     runs-on: windows-latest
     environment: ${{ inputs.environment }}

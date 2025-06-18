@@ -9,6 +9,10 @@ on:
         workflow-dispatch-event-id:
           required: true
           type: string
+        comment:
+            required: false
+            type: string
+            default: '<no comment>'
 
 jobs:
   call-base-workflows:
@@ -19,6 +23,7 @@ jobs:
     with:
       workflow-dispatch-event-id: ${{ inputs.workflow-dispatch-event-id }}
       environment: ${{ inputs.environment }}
+      comment: ${{ inputs.comment }}
   to-be-skipped:
     if: ${{ false }}
     runs-on: ubuntu-latest
