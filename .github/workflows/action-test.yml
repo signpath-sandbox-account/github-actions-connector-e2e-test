@@ -1,5 +1,5 @@
 # this workflow is used to test the e2e happy path of the signpath/github-action-submit-signing-request action
-name: e2e code scanning rule test
+name: test github action before release
 
 on:
     workflow_dispatch:
@@ -10,10 +10,6 @@ on:
         workflow-dispatch-event-id:
           required: true
           type: string
-        signing-policy-slug:
-          required: true
-          type: string
-          default: e2e-test-sp-code-scanning
         comment:
           required: false
           type: string
@@ -42,17 +38,27 @@ jobs:
           path: ./artifacts/small.exe
       - name: Run submit signing request
         id: submit_with_download
-        uses: signpath/github-action-submit-signing-request@main
+        uses: signpath/github-action-submit-signing-request@bugfix/SIGN-7496
         with:
             connector-url: ${{ vars.CONNECTOR_URL }}
             api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
             organization-id: ${{ vars.ORGANIZATION_ID }}
             project-slug: e2e-gha-test-project
             # this SigningPolicy has auto-approve enabled, so you don't need to approve the signing request
-            signing-policy-slug: ${{ inputs.signing-policy-slug }}
+            signing-policy-slug: e2e-test-sp
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
             wait-for-completion: true
-            output-artifact-directory: signed-artifact
-            
-     
+            #output-artifact-directory: signed-artifact
+            output-artifact-directory: C:\cygwin\files-signed
+            parameters: |
+              param1: ${{ toJSON('value1') }}
+              param2: "value2"
+      - name: Upload the signed artifact
+        id: upload-signed-artifact-step
+        uses: actions/upload-artifact@v4
+        with: 
+            name: signed-artifact
+            path: signed-artifact
+      - run: |
+          echo "Signed Artifact Id: ${{ steps.upload-signed-artifact-step.outputs.artifact-id }}"

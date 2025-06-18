@@ -14,15 +14,19 @@ on:
         required: true
         type: string
       environment:
-          required: true
-          type: string
+        required: true
+        type: string
+      comment:
+        required: false
+        type: string
+        default: '<no comment>'
 jobs:
   log-event-id:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
       - run: |
-          echo "E2E test identifier: ${{ inputs.workflow-dispatch-event-id }}"
+          echo "E2E test identifier: ${{ inputs.workflow-dispatch-event-id }}" && echo "comment provided by caller: ${{ inputs.comment }}"
       # run powersell script
       - shell: pwsh
         run: |
