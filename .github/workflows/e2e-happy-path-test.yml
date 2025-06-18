@@ -10,6 +10,10 @@ on:
         workflow-dispatch-event-id:
           required: true
           type: string
+        comment:
+            required: false
+            type: string
+            default: '<no comment>'
 jobs:
   call-base-workflows:
     uses: ./.github/workflows/e2e-workflow-base.yml
@@ -19,6 +23,7 @@ jobs:
     with:
       workflow-dispatch-event-id: ${{ inputs.workflow-dispatch-event-id }}
       environment: ${{ inputs.environment }}
+      comment: ${{ inputs.comment }}
   build:
     runs-on: windows-latest
     environment: ${{ inputs.environment }}
@@ -33,7 +38,7 @@ jobs:
           path: ./artifacts/small.exe
       - name: Run submit signing request
         id: submit_with_download
-        uses: signpath/github-action-submit-signing-request@main
+        uses: signpath/github-action-submit-signing-request@v1
         with:
             connector-url: ${{ vars.CONNECTOR_URL }}
             api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
@@ -44,7 +49,7 @@ jobs:
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
             wait-for-completion: true
-            output-artifact-directory: signed-artifact
+            output-artifact-directory: C:/signpath-output/signed-artifact
             parameters: |
               param1: ${{ toJSON('value1') }}
               param2: "value2"
@@ -53,6 +58,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with: 
             name: signed-artifact
-            path: signed-artifact
+            path: C:/signpath-output/signed-artifact
       - run: |
           echo "Signed Artifact Id: ${{ steps.upload-signed-artifact-step.outputs.artifact-id }}"
