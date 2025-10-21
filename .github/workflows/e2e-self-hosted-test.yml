@@ -38,13 +38,13 @@ jobs:
           path: ./artifacts/small.exe
       - name: Run submit signing request
         id: submit_with_download
-        uses: signpath/github-action-submit-signing-request@main
+        uses: signpath/github-action-submit-signing-request@feature/SIGN-8057
         with:
             connector-url: ${{ vars.CONNECTOR_URL }}
             api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
             organization-id: ${{ vars.ORGANIZATION_ID }}
             project-slug: e2e-gha-test-project
             # this SigningPolicy has auto-approve enabled, so you don't need to approve the signing request
-            signing-policy-slug: e2e-gha-test-project-self-hosted
+            signing-policy-slug: e2e-test-sp
             artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
