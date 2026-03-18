@@ -12,6 +12,10 @@ on:
         workflow-dispatch-event-id:
           required: true
           type: string
+        connector-url:
+          required: true
+          type: string
+          description: 'SignPath connector URL'
         comment:
           required: false
           type: string
@@ -276,11 +280,10 @@ jobs:
         id: submit_with_download
         uses: signpath/github-action-submit-signing-request@main
         with:
-            connector-url: ${{ vars.CONNECTOR_URL }}
+            connector-url: ${{ inputs.connector-url }}
             api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
             organization-id: ${{ vars.ORGANIZATION_ID }}
-            project-slug: e2e-gha-test-project
             # this SigningPolicy has auto-approve enabled, so you don't need to approve the signing request
+            project-slug: e2e-gha-test-project
             signing-policy-slug: e2e-test-sp
-            artifact-configuration-slug: exe-in-zip
             github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'

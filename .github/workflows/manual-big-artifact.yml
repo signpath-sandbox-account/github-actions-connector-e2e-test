@@ -1,0 +1,62 @@
+name: (manual runs only) big file test
+
+on:
+    workflow_dispatch:
+      inputs:
+        environment:
+          required: true
+          type: string
+        workflow-dispatch-event-id:
+          required: true
+          type: string
+        connector-url:
+          required: true
+          type: string
+          description: 'SignPath connector URL'
+        comment:
+          required: false
+          type: string
+          default: '<no comment>'
+        fileSizeMB:
+            required: true
+            type: number
+            default: 1000
+jobs:
+  call-base-workflows:
+    uses: ./.github/workflows/e2e-workflow-base.yml
+    secrets:
+      SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+      SIGNPATH_TOKEN_ENCRYPTION_KEY: ${{ secrets.SIGNPATH_TOKEN_ENCRYPTION_KEY }}
+    with:
+      workflow-dispatch-event-id: ${{ inputs.workflow-dispatch-event-id }}
+      environment: ${{ inputs.environment }}
+      comment: ${{ inputs.comment }}
+  build:
+    runs-on: windows-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Generate artifact
+        shell: pwsh
+        run: ./Generate-Artifact.ps1 -SizeMB ${{ inputs.fileSizeMB }} -OutputFile ./generated.exe
+      - name: Upload the artifcat file
+        id: upload-artifact-step
+        uses: actions/upload-artifact@v4
+        with: 
+          name: original-artifact
+          path: ./generated.exe
+      - name: Run submit signing request
+        id: submit_with_download
+        uses: signpath/github-action-submit-signing-request@main
+        with:
+            connector-url: ${{ inputs.connector-url }}
+            api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+            organization-id: ${{ vars.ORGANIZATION_ID }}
+            project-slug: e2e-gha-test-project
+            # this SigningPolicy has auto-approve enabled, so you don't need to approve the signing request
+            signing-policy-slug: e2e-test-sp
+            artifact-configuration-slug: exe-in-zip
+            github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
+            wait-for-completion: true
+            output-artifact-directory: signed-artifact
