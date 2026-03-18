@@ -1,0 +1,90 @@
+name: Build and Sign Artifact (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      artifact-path:
+        required: true
+        type: string
+        description: 'Path to the artifact file to upload and sign (e.g., ./artifacts/small.exe)'
+      connector-url:
+        required: true
+        type: string
+        description: 'SignPath connector URL'
+      signing-policy-slug:
+        required: false
+        type: string
+        default: 'e2e-test-sp'
+        description: 'SignPath signing policy slug'
+      output-artifact-directory:
+        required: false
+        type: string
+        default: 'signed-artifact'
+        description: 'Directory where signed artifact will be saved'
+      upload-signed-artifact:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether to upload the signed artifact back to GitHub'
+      runs-on:
+        required: false
+        type: string
+        default: 'windows-latest'
+        description: 'Runner to use for the job'
+      parameters:
+        required: false
+        type: string
+        default: ''
+        description: 'Additional parameters for SignPath signing request (YAML format)'
+    secrets:
+      SIGNPATH_API_TOKEN:
+        required: true
+
+jobs:
+  build-and-sign:
+    runs-on: ${{ inputs.runs-on }}
+    environment: ${{ inputs.environment }}
+    outputs:
+      original-artifact-id: ${{ steps.upload-artifact-step.outputs.artifact-id }}
+      signed-artifact-id: ${{ steps.upload-signed-artifact-step.outputs.artifact-id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Upload the artifact file
+        id: upload-artifact-step
+        uses: actions/upload-artifact@v4
+        with: 
+          name: original-artifact
+          path: ${{ inputs.artifact-path }}
+      
+      - name: Run submit signing request
+        id: submit_signing_request
+        uses: signpath/github-action-submit-signing-request@main
+        with:
+          connector-url: '${{ inputs.connector-url }}'
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: ${{ vars.ORGANIZATION_ID }}
+          project-slug: e2e-gha-test-project
+          signing-policy-slug: ${{ inputs.signing-policy-slug }}
+          artifact-configuration-slug: exe-in-zip
+          github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
+          wait-for-completion: true
+          output-artifact-directory: ${{ inputs.output-artifact-directory }}
+          parameters: ${{ inputs.parameters }}
+      
+      - name: Upload the signed artifact
+        if: ${{ inputs.upload-signed-artifact }}
+        id: upload-signed-artifact-step
+        uses: actions/upload-artifact@v4
+        with: 
+          name: signed-artifact
+          path: ${{ inputs.output-artifact-directory }}
+      
+      - name: Output signed artifact ID
+        if: ${{ inputs.upload-signed-artifact }}
+        run: |
+          echo "Signed Artifact Id: ${{ steps.upload-signed-artifact-step.outputs.artifact-id }}"

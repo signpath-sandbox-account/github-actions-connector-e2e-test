@@ -9,6 +9,10 @@ on:
         workflow-dispatch-event-id:
           required: true
           type: string
+        connector-url:
+          required: true
+          type: string
+          description: 'SignPath connector URL'
         comment:
           required: false
           type: string
@@ -31,36 +35,13 @@ jobs:
      - name: Dummy
        run: echo "Hello world!"
   sign:
-    runs-on: windows-latest
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Upload the artifcat file
-        id: upload-artifact-step
-        uses: actions/upload-artifact@v4
-        with: 
-          name: original-artifact
-          path: ./artifacts/small.exe
-      - name: Run submit signing request
-        id: submit_with_download
-        uses: signpath/github-action-submit-signing-request@v1
-        with:
-            connector-url: ${{ vars.CONNECTOR_URL }}
-            api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
-            organization-id: ${{ vars.ORGANIZATION_ID }}
-            project-slug: e2e-gha-test-project
-            # this SigningPolicy has auto-approve enabled, so you don't need to approve the signing request
-            signing-policy-slug: e2e-test-sp
-            artifact-configuration-slug: exe-in-zip
-            github-artifact-id: '${{ steps.upload-artifact-step.outputs.artifact-id }}'
-            wait-for-completion: true
-            output-artifact-directory: C:/signpath-output/signed-artifact
-      - name: Upload the signed artifact
-        id: upload-signed-artifact-step
-        uses: actions/upload-artifact@v4
-        with: 
-            name: signed-artifact
-            path: C:/signpath-output/signed-artifact
-      - run: |
-          echo "Signed Artifact Id: ${{ steps.upload-signed-artifact-step.outputs.artifact-id }}"
+    uses: ./.github/workflows/build-and-sign-reusable.yml
+    secrets:
+      SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+    with:
+      environment: ${{ inputs.environment }}
+      connector-url: ${{ inputs.connector-url }}
+      artifact-path: ./artifacts/small.exe
+      signing-policy-slug: e2e-test-sp
+      output-artifact-directory: C:/signpath-output/signed-artifact
+      upload-signed-artifact: true
